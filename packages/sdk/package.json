@@ -1,6 +1,6 @@
 {
     "name": "@evermind-sh/sdk",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "dependencies": {
         "tslib": "^2.3.0"
     },
@@ -16,6 +16,9 @@
         "name": "sdk"
     },
     "private": false,
-    "repository": "https://github.com/Evermind-sh/sdk",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Evermind-sh/sdk"
+    },
     "author": "Jay Bell (@JayCooperBell)"
 }
