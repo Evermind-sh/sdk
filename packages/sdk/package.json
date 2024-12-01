@@ -1,0 +1,21 @@
+{
+    "name": "@evermind-sh/sdk",
+    "version": "0.0.5",
+    "dependencies": {
+        "tslib": "^2.3.0"
+    },
+    "type": "commonjs",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "!**/*.tsbuildinfo"
+    ],
+    "nx": {
+        "sourceRoot": "packages/sdk/src",
+        "name": "sdk"
+    },
+    "private": false,
+    "repository": "https://github.com/Evermind-sh/sdk",
+    "author": "Jay Bell (@JayCooperBell)"
+}
