@@ -5,6 +5,8 @@
 
 [![Evermind](https://img.shields.io/badge/Evermind-Lock%20as%20a%20Service-blue)](https://evermind.sh)
 [![Polar.sh](https://img.shields.io/badge/Polar.sh-Purchase-orange)](https://polar.sh/evermind/)
+[![Bluesky](https://img.shields.io/badge/Evermind-Bluesky-blue)](https://bsky.app/profile/evermind.sh)
+
 
 ## 1. About [Evermind.sh](https://evermind.sh)
 
@@ -464,3 +466,5 @@ If you are looking for your own deployment on infrastructure isolated from the r
 
 1. Evermind SDK - [@evermind-sh/sdk](https://www.npmjs.com/package/@evermind-sh/sdk)
 2. Evermind CLI - [evermind](https://www.npmjs.com/package/evermind)
+3. [Evermind Bluesky](https://bsky.app/profile/evermind.sh)
+4. [Jay Bell Bluesky](https://bsky.app/profile/jaycooperbell.dev)
