@@ -1,9 +1,9 @@
 import type { ArgumentsCamelCase, Argv } from 'yargs';
 import { extractLicenceKey } from '../licence-key';
-import { KeysOptions, licenceKeyOption } from '../options';
+import { baseUrl, KeysOptions, licenceKeyOption } from '../options';
 
 interface DeleteKeyOptions extends KeysOptions {
-    apiKey: string;
+    key: string;
 }
 
 export const command = `delete <key>`;
@@ -17,8 +17,25 @@ export const builder = (yargs: Argv) => {
         })
         .option('licenceKey', licenceKeyOption);
 };
-export const handler = (argv: ArgumentsCamelCase<DeleteKeyOptions>) => {
+export const handler = async (argv: ArgumentsCamelCase<DeleteKeyOptions>) => {
     const licenceKey = extractLicenceKey(argv);
 
-    console.log(licenceKey);
+    const url = new URL(`/api-key`, baseUrl);
+
+    const response = await fetch(url, {
+        body: JSON.stringify({ apiKey: argv.key, licenceKey }),
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (response.ok) {
+        console.log(`Successfully deleted Evermind API Key.`);
+    } else {
+        console.log(
+            `Error while deleting Evermind API Key.`,
+            JSON.stringify(await response.json(), null, 2),
+        );
+    }
 };

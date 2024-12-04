@@ -1,7 +1,7 @@
 {
-	"targets": {
-		"copy-readme": {
-			"command": "cp tmp/profile/README.md packages/evermind/README.md"
-		}
-	}
+    "targets": {
+        "copy-readme": {
+            "command": "cp tmp/profile/README.md packages/sdk/README.md"
+        }
+    }
 }
