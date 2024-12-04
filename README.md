@@ -43,6 +43,8 @@ Lock Acquisition Attempts approximately measure usage in the system, although no
 
 Check our the pricing plans and subscribe via our [storefront](https://polar.sh/evermind/).
 
+Need unlimited LAAs? Reach out to <a href="mailto:hello@evermind.sh">hello@evermind.sh</a>!
+
 ---
 
 ## 3. Setup: Acquiring an API Key
