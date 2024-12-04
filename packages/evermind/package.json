@@ -1,8 +1,8 @@
 {
     "name": "evermind",
-    "version": "0.9.4",
+    "version": "0.9.5",
     "dependencies": {
-        "@evermind-sh/sdk": "0.9.4",
+        "@evermind-sh/sdk": "0.9.5",
         "tslib": "^2.3.0",
         "yargs": "^17"
     },
