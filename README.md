@@ -7,6 +7,24 @@
 [![Polar.sh](https://img.shields.io/badge/Polar.sh-Purchase-orange)](https://polar.sh/evermind/)
 [![Bluesky](https://img.shields.io/badge/Evermind-Bluesky-blue)](https://bsky.app/profile/evermind.sh)
 
+## Table of contents
+
+- [About Evermind.sh](#about-evermindsh)
+- [Evermind Lock](#evermind-lock)
+	- [Features](#features)
+	- [Future Features](#future-features)
+	- [Pricing](#pricing)
+		- [Pay as you go Pricing](#pay-as-you-go-pricing)
+		- [Enterprise Pricing](#enterprise-pricing)
+- [Setup: Acquiring an API Key](#setup-acquiring-an-api-key)
+	- [Using the CLI](#using-the-cli)
+	- [Direct HTTP API Calls](#direct-http-api-calls)
+		- [Create API Key](#create-api-key)
+		- [Delete API Key](#delete-api-key)
+- [Using Evermind](#using-evermind)
+	- [TypeScript SDK Usage](#typescript-sdk-usage)
+	- [HTTP API Examples](#http-api-examples)
+		- [Acquire Lock](#acquire-lock)
 
 ## 1. About [Evermind.sh](https://evermind.sh)
 
@@ -22,18 +40,18 @@ Evermind simplifies complex coordination challenges, enabling robust, fault-tole
 
 Evermind eliminates the complexities of building and managing distributed locking mechanisms. Our service provides:
 
-### Features
+### 2.1. Features
 - 🔄 **Configurable Lock Acquisitions:** Fine-tune lock behavior with options for lease duration, retries, and delay intervals.
 - ⏱️ **Automatic Expirations and Releases:** Prevent deadlocks and resource starvation.
 - ➕ **Lock Extensions:** Extend a lock without releasing it.
 - ☁️ **HTTP API & TypeScript SDK:** Flexible integrations with multiple environments that is serverless ready.
 - 🤝 **Soft Fail Option:** Handle errors gracefully with inline responses.
 
-### Future Features
+### 2.2. Future Features
 - 📜 **FIFO Locks:** First In, First Out locks, allowing you to ensure that acquisition order is honoured.
 - 🛠️ **Lock Acquisition Optimization:** Tools to help you optimize your lock durations and retry delays to reduce Lock Acquisition Attempts (See [Pricing](#pricing) below)
 
-### Pricing
+### 2.3. Pricing
 
 Evermind is billed based on how much usage (i.e. how many locks you will be acquiring), based on Lock Acquisition Attempts (LAAs).
 
@@ -45,7 +63,11 @@ Lock Acquisition Attempts approximately measure usage in the system, although no
 
 Check our the pricing plans and subscribe via our [storefront](https://polar.sh/evermind/).
 
-Need unlimited LAAs? Reach out to <a href="mailto:hello@evermind.sh">hello@evermind.sh</a>!
+#### 2.3.1. Pay as you go Pricing
+In the future Evermind will offer Pay as you go pricing, currently you must sign up for a subscription.
+
+#### 2.3.2. Enterprise Pricing
+Need unlimited LAAs or a higher level of support/isolation? Reach out to <a href="mailto:hello@evermind.sh">hello@evermind.sh</a>!
 
 ---
 
@@ -61,7 +83,7 @@ Licence Keys are automatically managed by Polar and will expire and have their u
 
 There is a 1:M relationship between Licence Keys and API Keys, all API Keys created for a Licence Key will contribute to that Licence Keys usage allocation.
 
-### 3.1 Using the CLI
+### 3.1. Using the CLI
 
 Install the CLI globally:
 
@@ -101,9 +123,9 @@ npx evermind keys delete YOUR_API_KEY
 
 ---
 
-### 3.2 Direct HTTP API Calls
+### 3.2. Direct HTTP API Calls
 
-#### Create API Key
+#### 3.2.1 Create API Key
 
 - **Endpoint:** `https://api.evermind.sh/api-key`
 - **Method:** `POST`
@@ -132,7 +154,7 @@ curl -X POST https://api.evermind.sh/api-key \
 
 ---
 
-#### Delete API Key
+#### 3.2.2. Delete API Key
 
 - **Endpoint:** `https://api.evermind.sh/api-key`
 - **Method:** `DELETE`
@@ -163,7 +185,7 @@ curl -X DELETE https://api.evermind.sh/api-key \
 
 Once you have an API key, you can interact with the lock service to acquire, extend, and release locks. The following sections describe how to use the system directly via HTTP methods and with the TypeScript SDK.
 
-### 4.1 TypeScript SDK Usage
+### 4.1. TypeScript SDK Usage
 
 Install the SDK:
 
@@ -204,9 +226,9 @@ const result = await evermind.withLock({ key }, async () => {
 
 ---
 
-### 4.2 HTTP API Examples
+### 4.2. HTTP API Examples
 
-#### Acquire Lock
+#### 4.2.1. Acquire Lock
 
 - **Endpoint:** `https://lock.evermind.sh/lock/acquire`
 - **Method:** `POST`
@@ -255,7 +277,7 @@ curl -X POST https://lock.evermind.sh/lock/acquire \
 
 ---
 
-#### Extend Lock
+#### 4.2.2. Extend Lock
 
 - **Endpoint:** `https://lock.evermind.sh/lock/extend`
 - **Method:** `POST`
@@ -292,7 +314,7 @@ curl -X POST https://lock.evermind.sh/lock/extend \
 
 ---
 
-#### Release Lock
+#### 4.2.3. Release Lock
 
 - **Endpoint:** `https://lock.evermind.sh/lock/release`
 - **Method:** `POST`
@@ -333,11 +355,11 @@ Here’s the expanded **DTOs** section with endpoint details, Evermind SDK metho
 
 ## 5. Lock API
 
-### Lock Operations
+### 5.1. Lock Operations
 
 The Lock API is used for acquiring, extending, and releasing locks. Below are the DTOs for each operation, along with their corresponding HTTP endpoints and Evermind SDK method names.
 
-#### Acquire Lock
+#### 5.1.1. Acquire Lock
 
 | **Field**       | **Type**    | **Required** | **Description**                                         |
 |------------------|-------------|--------------|---------------------------------------------------------|
@@ -360,7 +382,7 @@ Acquires a lock on a given resource (`key`). By default, if the lock cannot be a
 
 ---
 
-#### Extend Lock
+#### 5.1.2. Extend Lock
 
 | **Field**       | **Type**    | **Required** | **Description**                                         |
 |------------------|-------------|--------------|---------------------------------------------------------|
@@ -381,7 +403,7 @@ Extends the duration of an existing lock. The `uuid` must match the UUID of the 
 
 ---
 
-#### Release Lock
+#### 5.1.3. Release Lock
 
 | **Field**       | **Type**    | **Required** | **Description**                                         |
 |------------------|-------------|--------------|---------------------------------------------------------|
@@ -401,7 +423,7 @@ Releases a lock on a resource. The `uuid` must match the UUID used to acquire th
 
 ---
 
-### Summary of SDK Methods and HTTP Endpoints
+### 5.2. Summary of SDK Methods and HTTP Endpoints
 
 | **Operation** | **HTTP Endpoint**                        | **SDK Method**              | **Description**                                                              |
 |---------------|------------------------------------------|-----------------------------|------------------------------------------------------------------------------|
@@ -411,7 +433,7 @@ Releases a lock on a resource. The `uuid` must match the UUID used to acquire th
 
 ---
 
-### Additional Notes
+### 5.3. Additional Notes
 
 - **Error Handling:** By default, errors are returned as HTTP status codes. Setting `softFail: true` in any request results in errors being returned inline within a `200 OK` response.
 - **UUID Management:** For optimal operation, UUIDs are used as a lock value to uniquely identify a lock acquisition. If you generate lock values manually, ensure they are truly unique to prevent collisions.
@@ -423,24 +445,24 @@ Releases a lock on a resource. The `uuid` must match the UUID used to acquire th
 
 Evermind offers a managed DLaaS solution. However, various alternatives exist for concurrency control. Here's a comparison to help you choose the right tool:
 
-### Distributed Locks vs. Local Mutexes
+### 6.1. Distributed Locks vs. Local Mutexes
 
 - **Local Mutexes:** Efficient for single-process applications. Libraries like `sync.Mutex` (Go), `asyncio.Lock` (Python), and `@synchronized` (Objective-C/Swift) operate within a single process's memory.
 - **Distributed Locks:** Necessary for coordinating shared resources across multiple processes or machines. This is where Evermind excels.
 
-### Alternatives to Evermind
+### 6.2. Alternatives to Evermind
 
 - **Redlock Algorithm (e.g., npm package `redlock`):** Fault-tolerant distributed locking using multiple Redis instances. However, managing Redis infrastructure introduces additional complexity.
 - **Database-based Locking:** Simple to implement but may cause performance bottlenecks in high-contention scenarios.
 - **Distributed Consensus Systems (e.g., etcd, ZooKeeper):** Offer robust locking with higher operational overhead.
 
-### When to Use Evermind
+### 6.3. When to Use Evermind
 
 - Simplifying distributed locking without managing infrastructure.
 - Seamless integration with serverless environments.
 - Rapid development with minimal setup.
 
-### When Not to Use Evermind
+### 6.4. When Not to Use Evermind
 
 - Single-process applications (use local mutexes instead).
 - Applications already using robust Redis infrastructure and comfortable with Redlock.
