@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "clone-profile": "rm -rf tmp/ && git clone https://github.com/Evermind-sh/.github tmp"
+        "clone-profile": "rm -rf tmp/ && git clone https://github.com/Evermind-sh/.github tmp && cp tmp/profile/README.md ."
     },
     "private": true,
     "dependencies": {

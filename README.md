@@ -1,109 +1,452 @@
-# EvermindShSdk
+<p align="center">
+	<img src="https://avatars.githubusercontent.com/u/184973784" alt="Evermind Logo" style="width: 100px;vertical-align: middle;">
+</p>
+<h1 align="center">Evermind - Distributed Lock as a Service</h1>
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![Evermind](https://img.shields.io/badge/Evermind-Lock%20as%20a%20Service-blue)](https://evermind.sh)
+[![Polar.sh](https://img.shields.io/badge/Polar.sh-Purchase-orange)](https://polar.sh/evermind/)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 1. About [Evermind.sh](https://evermind.sh)
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+[Evermind](https://evermind.sh) is a simple, reliable, and scalable Distributed Lock-as-a-Service (LaaS).
 
-## Generate a library
+Locks (sometimes referred to as a Mutex or a Semaphore) empowers developers to maintain consistency across distributed systems effortlessly by offering tools to acquire, extend, and release locks on shared resources. Evermind simplifies complex coordination challenges, enabling robust, fault-tolerant applications that ensure atomic operations on resources across distributed systems.
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+---
+
+## 2. Evermind Lock
+
+Evermind eliminates the complexities of building and managing distributed locking mechanisms. Our service provides:
+
+### Supports
+- 🔄 Configurable lock acquisitions with automatic retries.
+- ⏱️ Automatic expirations and releases.
+- ➕ Lock extensions.
+- ☁️ A serverless-ready (HTTP based) architecture that integrates easily into any environment.
+
+Subscribe to a plan via our storefront: [Polar.sh](https://polar.sh/evermind/).
+
+---
+
+## 3. Setup: Acquiring an API Key
+
+To interact with Evermind's lock API, you first need to exchange your Polar.sh license key for an API key. Licence Keys can be purchased from our [Polar.sh](https://polar.sh/evermind/) storefront.
+
+1. Visit the store: [Polar.sh](https://polar.sh/evermind/)
+2. Subscribe to a plan, each plan comes with 1x Licence Key as a Benefit that can be exchanged for 1 or more API Keys
+3. Go to your benefits for your subscription and use the Licence Key to create an API key (below)
+
+Licence Keys are automatically managed by Polar and will expire and have their usage allocations tracked within the Polar system, but you manage your own API Keys.
+
+There is a 1:M relationship between Licence Keys and API Keys, all API Keys created for a Licence Key will contribute to that Licence Keys usage allocation.
+
+### 3.1 Using the CLI
+
+Install the CLI globally:
+
+```bash
+npm install -g evermind
 ```
 
-## Run tasks
+Or, run the command using `npx`, `bunx`, etc.
 
-To build the library use:
+**Create an API key:**
 
-```sh
-npx nx build pkg1
+```bash
+npx evermind keys create --licenceKey <licence-key>
 ```
 
-To run any task with Nx use:
+Or let the Evermind CLI read the licence key from the `EVERMIND_LICENCE_KEY` environment variable:
 
-```sh
-npx nx <target> <project-name>
+```bash
+export EVERMIND_LICENCE_KEY=YOUR_POLAR_SH_LICENCE_KEY
+
+npx evermind keys create
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+**Delete an API key:**
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
+```bash
+npx evermind keys delete YOUR_API_KEY --licenceKey YOUR_POLAR_SH_LICENCE_KEY
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+Or use an environment variable:
 
-[Learn more about Nx release &raquo;](hhttps://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+export EVERMIND_LICENCE_KEY=YOUR_POLAR_SH_LICENCE_KEY
 
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+npx evermind keys delete YOUR_API_KEY
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+---
 
-```sh
-npx nx sync:check
+### 3.2 Direct HTTP API Calls
+
+#### Create API Key
+
+- **Endpoint:** `https://api.evermind.sh/api-key`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "licenceKey": "YOUR_POLAR_SH_LICENCE_KEY"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "apiKey": "YOUR_API_KEY"
+  }
+  ```
+
+**cURL Example:**
+
+```bash
+curl -X POST https://api.evermind.sh/api-key \
+-H "Content-Type: application/json" \
+-d '{
+  "licenceKey": "YOUR_POLAR_SH_LICENCE_KEY"
+}'
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+---
 
-## Set up CI!
+#### Delete API Key
 
-### Step 1
+- **Endpoint:** `https://api.evermind.sh/api-key`
+- **Method:** `DELETE`
+- **Body:**
+  ```json
+  {
+    "licenceKey": "YOUR_POLAR_SH_LICENCE_KEY",
+    "apiKey": "YOUR_API_KEY"
+  }
+  ```
+- **Response:**
+  204 No Content (if successful)
 
-To connect to Nx Cloud, run the following command:
+**cURL Example:**
 
-```sh
-npx nx connect
+```bash
+curl -X DELETE https://api.evermind.sh/api-key \
+-H "Content-Type: application/json" \
+-d '{
+  "licenceKey": "YOUR_POLAR_SH_LICENCE_KEY",
+  "apiKey": "YOUR_API_KEY"
+}'
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+---
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 4. Using Evermind
 
-### Step 2
+Once you have an API key, you can interact with the lock service to acquire, extend, and release locks. The following sections describe how to use the system directly via HTTP methods and with the TypeScript SDK.
 
-Use the following command to configure a CI workflow for your workspace:
+### 4.1 TypeScript SDK Usage
 
-```sh
-npx nx g ci-workflow
+Install the SDK:
+
+npm
+```bash
+npm install @evermind/sdk
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Example Usage:**
 
-## Install Nx Console
+```typescript
+import { Evermind } from 'evermind';
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+const evermind = new Evermind({ apiKey: 'YOUR_API_KEY' });
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+const key = 'my_resource';
 
-## Useful links
+// Acquire a lock directly
+const acquireResponse = await evermind.acquire({ key, lease: 5000 });
+console.log('Acquire:', acquireResponse);
 
-Learn more:
+// Extend a lock that has been acquired
+if (acquireResponse.acquired) {
+	const extendResponse = await evermind.extend({ key, uuid: acquireResponse.config.uuid, extendBy: 2000 });
+	console.log('Extend:', extendResponse);
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+	// Release the lock
+	const releaseResponse = await evermind.release({ key, uuid: acquireResponse.config.uuid, softFail: true });
+	console.log('Release:', releaseResponse);
+}
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+// Using `withLock` to simplify lock management, will automatically release the lock once the routine is finished.
+const result = await evermind.withLock({ key }, async () => {
+	// Do some work while holding the lock
+	return 'some result';
+});
+```
+
+---
+
+### 4.2 HTTP API Examples
+
+#### Acquire Lock
+
+- **Endpoint:** `https://lock.evermind.sh/lock/acquire`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "key": "resource_key",
+    "lease": 5000,
+    "retryAttempts": 5,
+    "retryDelay": 500,
+    "uuid": "custom-uuid",
+    "softFail": false
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "acquired": true,
+    "lockAcquisitionAttempts": 1,
+    "config": {
+      "key": "resource_key",
+      "lease": 5000,
+      "retryAttempts": 5,
+      "retryDelay": 500,
+      "uuid": "custom-uuid"
+    },
+    "message": null
+  }
+  ```
+
+**cURL Example:**
+
+```bash
+curl -X POST https://lock.evermind.sh/lock/acquire \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer YOUR_API_KEY" \
+-d '{
+  "key": "resource_key",
+  "lease": 5000,
+  "retryAttempts": 5,
+  "retryDelay": 500,
+  "uuid": "custom-uuid",
+  "softFail": false
+}'
+```
+
+---
+
+#### Extend Lock
+
+- **Endpoint:** `https://lock.evermind.sh/lock/extend`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "key": "resource_key",
+    "uuid": "custom-uuid",
+    "extendBy": 3000,
+    "softFail": true
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "extended": true,
+    "message": null
+  }
+  ```
+
+**cURL Example:**
+
+```bash
+curl -X POST https://lock.evermind.sh/lock/extend \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer YOUR_API_KEY" \
+-d '{
+  "key": "resource_key",
+  "uuid": "custom-uuid",
+  "extendBy": 3000,
+  "softFail": true
+}'
+```
+
+---
+
+#### Release Lock
+
+- **Endpoint:** `https://lock.evermind.sh/lock/release`
+- **Method:** `POST`
+- **Body:**
+  ```json
+  {
+    "key": "resource_key",
+    "uuid": "custom-uuid",
+    "softFail": true
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "released": true,
+    "message": null
+  }
+  ```
+
+**cURL Example:**
+
+```bash
+curl -X POST https://lock.evermind.sh/lock/release \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer YOUR_API_KEY" \
+-d '{
+  "key": "resource_key",
+  "uuid": "custom-uuid",
+  "softFail": true
+}'
+```
+
+---
+
+Here’s the expanded **DTOs** section with endpoint details, Evermind SDK method names, descriptions, caveats, and additional explanations.
+
+---
+
+## 5. Lock API
+
+### Lock Operations
+
+The Lock API is used for acquiring, extending, and releasing locks. Below are the DTOs for each operation, along with their corresponding HTTP endpoints and Evermind SDK method names.
+
+#### Acquire Lock
+
+| **Field**       | **Type**    | **Required** | **Description**                                         |
+|------------------|-------------|--------------|---------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource to lock.                                   |
+| `lease`         | `number`    | No           | Lock duration in milliseconds. Default: `10000`.       |
+| `retryAttempts` | `number`    | No           | Number of retry attempts. Default: `10`.               |
+| `retryDelay`    | `number`    | No           | Milliseconds between retries. Default: `500`.          |
+| `uuid`          | `string`    | No           | Optional custom UUID for the lock.                     |
+| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+
+- **Endpoint:** `POST https://lock.evermind.sh/lock/acquire`
+- **SDK Method:** `evermind.acquire(options: AcquireOptions)`
+
+**Description:**
+Acquires a lock on a given resource (`key`). By default, if the lock cannot be acquired immediately, the system will retry the specified number of times (`retryAttempts`) with the provided delay (`retryDelay`).
+
+**Caveats:**
+- Locks are tied to a unique `uuid`. If a custom UUID is not provided, the system generates one.
+- Using `softFail: true` ensures errors are returned inline instead of throwing exceptions. This can simplify error handling in some scenarios.
+
+---
+
+#### Extend Lock
+
+| **Field**       | **Type**    | **Required** | **Description**                                         |
+|------------------|-------------|--------------|---------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource key to extend the lock on.                |
+| `uuid`          | `string`    | Yes          | UUID of the lock instance to extend.                   |
+| `extendBy`      | `number`    | Yes          | Milliseconds to extend the lock.                       |
+| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+
+- **Endpoint:** `POST https://lock.evermind.sh/lock/extend`
+- **SDK Method:** `evermind.extend(options: ExtendOptions)`
+
+**Description:**
+Extends the duration of an existing lock. The `uuid` must match the UUID of the currently held lock, and the `extendBy` value specifies how much additional time (in milliseconds) to add to the lock duration.
+
+**Caveats:**
+- Attempting to extend a non-existent or expired lock will fail unless `softFail` is set to `true`.
+- The extension is relative to the current lock's expiration time and not to the time of the request.
+
+---
+
+#### Release Lock
+
+| **Field**       | **Type**    | **Required** | **Description**                                         |
+|------------------|-------------|--------------|---------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource key to release the lock on.               |
+| `uuid`          | `string`    | Yes          | UUID of the lock instance to release.                  |
+| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+
+- **Endpoint:** `POST https://lock.evermind.sh/lock/release`
+- **SDK Method:** `evermind.release(options: ReleaseOptions)`
+
+**Description:**
+Releases a lock on a resource. The `uuid` must match the UUID used to acquire the lock. If the lock is already released or does not exist, the response will indicate this unless `softFail` is set to `true`.
+
+**Caveats:**
+- Ensure that the `uuid` provided matches the one used during acquisition; otherwise, the release will fail.
+- Using `softFail: true` can help avoid exceptions when the lock does not exist or has already been released.
+
+---
+
+### Summary of SDK Methods and HTTP Endpoints
+
+| **Operation** | **HTTP Endpoint**                        | **SDK Method**              | **Description**                                                              |
+|---------------|------------------------------------------|-----------------------------|------------------------------------------------------------------------------|
+| Acquire Lock  | `POST /lock/acquire`                     | `evermind.acquire`          | Attempts to acquire a lock on the given resource.                           |
+| Extend Lock   | `POST /lock/extend`                      | `evermind.extend`           | Extends the duration of a held lock.                                        |
+| Release Lock  | `POST /lock/release`                     | `evermind.release`          | Releases the lock on the specified resource.                                |
+
+---
+
+### Additional Notes
+
+- **Error Handling:** By default, errors are returned as HTTP status codes. Setting `softFail: true` in any request results in errors being returned inline within a `200 OK` response.
+- **UUID Management:** For optimal operation, UUIDs are used as a lock value to uniquely identify a lock acquisition. If you generate lock values manually, ensure they are truly unique to prevent collisions.
+- **Retry Logic:** Retry attempts and delays are configurable for acquisitions. This is particularly useful in scenarios with high contention for a resource.
+
+---
+
+## 6. Features
+
+- **Configurable Lock Acquisitions:** Fine-tune lock behavior with options for lease duration, retries, and delay intervals.
+- **Automatic Expirations and Releases:** Prevent deadlocks and resource starvation.
+- **Lock Extensions:** Extend a lock without releasing it.
+- **HTTP API & TypeScript SDK:** Flexible integrations with multiple environments.
+- **Soft Fail Option:** Handle errors gracefully with inline responses.
+
+---
+
+## 7. Discussion & Alternatives
+
+Evermind offers a managed DLaaS solution. However, various alternatives exist for concurrency control. Here's a comparison to help you choose the right tool:
+
+### Distributed Locks vs. Local Mutexes
+
+- **Local Mutexes:** Efficient for single-process applications. Libraries like `sync.Mutex` (Go), `asyncio.Lock` (Python), and `@synchronized` (Objective-C/Swift) operate within a single process's memory.
+- **Distributed Locks:** Necessary for coordinating shared resources across multiple processes or machines. This is where Evermind excels.
+
+### Alternatives to Evermind
+
+- **Redlock Algorithm (e.g., npm package `redlock`):** Fault-tolerant distributed locking using multiple Redis instances. However, managing Redis infrastructure introduces additional complexity.
+- **Database-based Locking:** Simple to implement but may cause performance bottlenecks in high-contention scenarios.
+- **Distributed Consensus Systems (e.g., etcd, ZooKeeper):** Offer robust locking with higher operational overhead.
+
+### When to Use Evermind
+
+- Simplifying distributed locking without managing infrastructure.
+- Seamless integration with serverless environments.
+- Rapid development with minimal setup.
+
+### When Not to Use Evermind
+
+- Single-process applications (use local mutexes instead).
+- Applications already using robust Redis infrastructure and comfortable with Redlock.
+- Extremely low-latency scenarios that require finely-tuned, in-house solutions.
+
+---
+
+## 8. Regions and Deployment
+
+Evermind.sh is hosted on [Fly.io](https://fly.io) and has servers in the following regions:
+
+1. `yyz` - Toronto, Canada
+2. `yul` - Montreal, Canada
+3. `sea` - Seattle, Washington (US)
+
+If you are wanting to use Evermind in a region closer to where your servers are going to be, feel free to open a pull request here with your new region request. You can find the available regions [here](https://fly.io/docs/reference/regions/).
+
+You can choose to send your traffic to a specific region using [this](https://fly.io/docs/networking/dynamic-request-routing/#the-fly-prefer-region-request-header) method. Only the regions above are supported.
+
+If you are looking for your own deployment on infrastructure isolated from the rest of the Evermind platform or are wanting to run all services (Lock API, Database and Cache) in the same region as the server, feel free to reach out to <a href="mailto:hello@evermind.sh">hello@evermind.sh</a>.
