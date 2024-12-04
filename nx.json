@@ -32,7 +32,7 @@
     ],
     "release": {
         "version": {
-            "preVersionCommand": "bunx nx run-many -t build"
+            "preVersionCommand": "bun run clone-profile && bunx nx run-many -t build,copy-readme"
         }
     }
 }

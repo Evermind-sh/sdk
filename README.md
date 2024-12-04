@@ -8,9 +8,11 @@
 
 ## 1. About [Evermind.sh](https://evermind.sh)
 
-[Evermind](https://evermind.sh) is a simple, reliable, and scalable Distributed Lock-as-a-Service (LaaS).
+*Evermind*, translated from the Rohanese word *Simbelmynë*—the name of a small white flower symbolizing "everlasting memory"—is a simple, reliable, and scalable Distributed Lock-as-a-Service (LaaS).
 
-Locks (sometimes referred to as a Mutex or a Semaphore) empowers developers to maintain consistency across distributed systems effortlessly by offering tools to acquire, extend, and release locks on shared resources. Evermind simplifies complex coordination challenges, enabling robust, fault-tolerant applications that ensure atomic operations on resources across distributed systems.
+Locks (sometimes referred to as a Mutex or a Semaphore) empowers developers to maintain consistency across distributed systems effortlessly by offering tools to acquire, extend, and release locks on shared resources.
+
+Evermind simplifies complex coordination challenges, enabling robust, fault-tolerant applications that ensure atomic operations on resources across distributed systems.
 
 ---
 
@@ -18,13 +20,28 @@ Locks (sometimes referred to as a Mutex or a Semaphore) empowers developers to m
 
 Evermind eliminates the complexities of building and managing distributed locking mechanisms. Our service provides:
 
-### Supports
-- 🔄 Configurable lock acquisitions with automatic retries.
-- ⏱️ Automatic expirations and releases.
-- ➕ Lock extensions.
-- ☁️ A serverless-ready (HTTP based) architecture that integrates easily into any environment.
+### Features
+- 🔄 **Configurable Lock Acquisitions:** Fine-tune lock behavior with options for lease duration, retries, and delay intervals.
+- ⏱️ **Automatic Expirations and Releases:** Prevent deadlocks and resource starvation.
+- ➕ **Lock Extensions:** Extend a lock without releasing it.
+- ☁️ **HTTP API & TypeScript SDK:** Flexible integrations with multiple environments that is serverless ready.
+- 🤝 **Soft Fail Option:** Handle errors gracefully with inline responses.
 
-Subscribe to a plan via our storefront: [Polar.sh](https://polar.sh/evermind/).
+### Future Features
+- 📜 **FIFO Locks:** First In, First Out locks, allowing you to ensure that acquisition order is honoured.
+- 🛠️ **Lock Acquisition Optimization:** Tools to help you optimize your lock durations and retry delays to reduce Lock Acquisition Attempts (See [Pricing](#pricing) below)
+
+### Pricing
+
+Evermind is billed based on how much usage (i.e. how many locks you will be acquiring), based on Lock Acquisition Attempts (LAAs).
+
+A Lock Acquisition Attempt (LAA) is where a call to the Evermind Lock API attempts to acquire a lock on a resource, if that resource can be acquired on the first attempt and then a subsequent call to the Evermind API releases it, that is 1 LAA.
+
+If that resource is unable to be acquired on the first attempt and must retry `N` times then the total number of LAAs used would be `M`, where `M` is `1 + the number of retires`.
+
+Lock Acquisition Attempts approximately measure usage in the system, although notably Lock Releases and Lock extensions are not billed and do not count towards your Licence Key usage.
+
+Check our the pricing plans and subscribe via our [storefront](https://polar.sh/evermind/).
 
 ---
 
@@ -398,17 +415,7 @@ Releases a lock on a resource. The `uuid` must match the UUID used to acquire th
 
 ---
 
-## 6. Features
-
-- **Configurable Lock Acquisitions:** Fine-tune lock behavior with options for lease duration, retries, and delay intervals.
-- **Automatic Expirations and Releases:** Prevent deadlocks and resource starvation.
-- **Lock Extensions:** Extend a lock without releasing it.
-- **HTTP API & TypeScript SDK:** Flexible integrations with multiple environments.
-- **Soft Fail Option:** Handle errors gracefully with inline responses.
-
----
-
-## 7. Discussion & Alternatives
+## 6. Discussion & Alternatives
 
 Evermind offers a managed DLaaS solution. However, various alternatives exist for concurrency control. Here's a comparison to help you choose the right tool:
 
@@ -437,7 +444,7 @@ Evermind offers a managed DLaaS solution. However, various alternatives exist fo
 
 ---
 
-## 8. Regions and Deployment
+## 7. Regions and Deployment
 
 Evermind.sh is hosted on [Fly.io](https://fly.io) and has servers in the following regions:
 
@@ -450,3 +457,8 @@ If you are wanting to use Evermind in a region closer to where your servers are 
 You can choose to send your traffic to a specific region using [this](https://fly.io/docs/networking/dynamic-request-routing/#the-fly-prefer-region-request-header) method. Only the regions above are supported.
 
 If you are looking for your own deployment on infrastructure isolated from the rest of the Evermind platform or are wanting to run all services (Lock API, Database and Cache) in the same region as the server, feel free to reach out to <a href="mailto:hello@evermind.sh">hello@evermind.sh</a>.
+
+## 8. Related
+
+1. Evermind SDK - [@evermind-sh/sdk](https://www.npmjs.com/package/@evermind-sh/sdk)
+2. Evermind CLI - [evermind](https://www.npmjs.com/package/evermind)
