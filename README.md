@@ -9,22 +9,38 @@
 
 ## Table of contents
 
-- [About Evermind.sh](#about-evermindsh)
-- [Evermind Lock](#evermind-lock)
-	- [Features](#features)
-	- [Future Features](#future-features)
-	- [Pricing](#pricing)
-		- [Pay as you go Pricing](#pay-as-you-go-pricing)
-		- [Enterprise Pricing](#enterprise-pricing)
-- [Setup: Acquiring an API Key](#setup-acquiring-an-api-key)
-	- [Using the CLI](#using-the-cli)
-	- [Direct HTTP API Calls](#direct-http-api-calls)
-		- [Create API Key](#create-api-key)
-		- [Delete API Key](#delete-api-key)
-- [Using Evermind](#using-evermind)
-	- [TypeScript SDK Usage](#typescript-sdk-usage)
-	- [HTTP API Examples](#http-api-examples)
-		- [Acquire Lock](#acquire-lock)
+- [About Evermind.sh](#1-about-evermindsh)
+- [Evermind Lock](#2-evermind-lock)
+	- [Features](#21-features)
+	- [Future Features](#22-future-features)
+	- [Pricing](#23-pricing)
+		- [Pay as you go Pricing](#231-pay-as-you-go-pricing)
+		- [Enterprise Pricing](#232-enterprise-pricing)
+- [Setup: Acquiring an API Key](#3-setup-acquiring-an-api-key)
+	- [Using the CLI](#31-using-the-cli)
+	- [Direct HTTP API Calls](#32-direct-http-api-calls)
+		- [Create API Key](#321-create-api-key)
+		- [Delete API Key](#322-delete-api-key)
+- [Using Evermind](#4-using-evermind)
+	- [TypeScript SDK Usage](#41-typescript-sdk-usage)
+	- [HTTP API Examples](#42-http-api-examples)
+		- [Acquire Lock](#421-acquire-lock)
+		- [Extend Lock](#422-extend-lock)
+		- [Release Lock](#423-release-lock)
+- [Lock API](#5-lock-api)
+	- [Lock Operations](#51-lock-operations)
+		- [Acquire Lock](#511-acquire-lock)
+		- [Extend Lock](#512-extend-lock)
+		- [Release Lock](#513-release-lock)
+	- [Summary of SDK Methods and HTTP Endpoints](#52-summary-of-sdk-methods-and-http-endpoints)
+    - [Additional Notes](#53-additional-notes)
+- [Discussion & Alternatives](#6-discussion--alternatives)
+    - [Distributed Locks vs. Local Mutexes](#61-distributed-locks-vs-local-mutexes)
+    - [Alternatives to Evermind](#62-alternatives-to-evermind)
+    - [When Not to Use Evermind](#63-when-to-use-evermind)
+    - [When to Use Evermind](#64-when-not-to-use-evermind)
+- [Regions & Deployment](#7-regions-and-deployment)
+- [Related](#8-related)
 
 ## 1. About [Evermind.sh](https://evermind.sh)
 
@@ -235,12 +251,10 @@ const result = await evermind.withLock({ key }, async () => {
 - **Body:**
   ```json
   {
-    "key": "resource_key",
+    "key": "<your resource key>",
     "lease": 5000,
     "retryAttempts": 5,
-    "retryDelay": 500,
-    "uuid": "custom-uuid",
-    "softFail": false
+    "retryDelay": 500
   }
   ```
 - **Response:**
@@ -249,11 +263,11 @@ const result = await evermind.withLock({ key }, async () => {
     "acquired": true,
     "lockAcquisitionAttempts": 1,
     "config": {
-      "key": "resource_key",
+      "key": "<your resource key>",
       "lease": 5000,
       "retryAttempts": 5,
       "retryDelay": 500,
-      "uuid": "custom-uuid"
+      "uuid": "<UUIDv7>"
     },
     "message": null
   }
@@ -266,12 +280,10 @@ curl -X POST https://lock.evermind.sh/lock/acquire \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer YOUR_API_KEY" \
 -d '{
-  "key": "resource_key",
+  "key": "<your resource key>",
   "lease": 5000,
   "retryAttempts": 5,
-  "retryDelay": 500,
-  "uuid": "custom-uuid",
-  "softFail": false
+  "retryDelay": 500
 }'
 ```
 
@@ -284,8 +296,8 @@ curl -X POST https://lock.evermind.sh/lock/acquire \
 - **Body:**
   ```json
   {
-    "key": "resource_key",
-    "uuid": "custom-uuid",
+    "key": "<your resource key>",
+    "uuid": "<UUIDv7>",
     "extendBy": 3000,
     "softFail": true
   }
@@ -305,10 +317,9 @@ curl -X POST https://lock.evermind.sh/lock/extend \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer YOUR_API_KEY" \
 -d '{
-  "key": "resource_key",
-  "uuid": "custom-uuid",
+  "key": "<your resource key>",
   "extendBy": 3000,
-  "softFail": true
+  "uuid": "<UUIDv7>"
 }'
 ```
 
@@ -321,8 +332,8 @@ curl -X POST https://lock.evermind.sh/lock/extend \
 - **Body:**
   ```json
   {
-    "key": "resource_key",
-    "uuid": "custom-uuid",
+    "key": "<your resource key>",
+    "uuid": "<UUIDv7>",
     "softFail": true
   }
   ```
@@ -341,9 +352,8 @@ curl -X POST https://lock.evermind.sh/lock/release \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer YOUR_API_KEY" \
 -d '{
-  "key": "resource_key",
-  "uuid": "custom-uuid",
-  "softFail": true
+  "key": "<your resource key>",
+  "uuid": "<UUIDv7>"
 }'
 ```
 
@@ -361,14 +371,14 @@ The Lock API is used for acquiring, extending, and releasing locks. Below are th
 
 #### 5.1.1. Acquire Lock
 
-| **Field**       | **Type**    | **Required** | **Description**                                         |
-|------------------|-------------|--------------|---------------------------------------------------------|
-| `key`           | `string`    | Yes          | The resource to lock.                                   |
-| `lease`         | `number`    | No           | Lock duration in milliseconds. Default: `10000`.       |
-| `retryAttempts` | `number`    | No           | Number of retry attempts. Default: `10`.               |
-| `retryDelay`    | `number`    | No           | Milliseconds between retries. Default: `500`.          |
-| `uuid`          | `string`    | No           | Optional custom UUID for the lock.                     |
-| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+| **Field**       | **Type**    | **Required** | **Description**                                                                                                        |
+|------------------|-------------|--------------|------------------------------------------------------------------------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource to acquire a lock on.                                                                                     |
+| `lease`         | `number`    | No           | Lock duration in milliseconds. Default: `10000`.                                                                       |
+| `retryAttempts` | `number`    | No           | Number of retry attempts. Default: `10`.                                                                               |
+| `retryDelay`    | `number`    | No           | Milliseconds between retries. Default: `500`.                                                                          |
+| `uuid`          | `string`    | No           | Optional custom UUID for the lock. If not provided a UUIDv7 is used by default. It is recommended you use the default. |
+| `softFail`      | `boolean`   | No           | Return errors inline in an HTTP 200 instead of throwing errors.                                                        |
 
 - **Endpoint:** `POST https://lock.evermind.sh/lock/acquire`
 - **SDK Method:** `evermind.acquire(options: AcquireOptions)`
@@ -384,12 +394,12 @@ Acquires a lock on a given resource (`key`). By default, if the lock cannot be a
 
 #### 5.1.2. Extend Lock
 
-| **Field**       | **Type**    | **Required** | **Description**                                         |
-|------------------|-------------|--------------|---------------------------------------------------------|
-| `key`           | `string`    | Yes          | The resource key to extend the lock on.                |
-| `uuid`          | `string`    | Yes          | UUID of the lock instance to extend.                   |
-| `extendBy`      | `number`    | Yes          | Milliseconds to extend the lock.                       |
-| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+| **Field**       | **Type**    | **Required** | **Description**                                                 |
+|------------------|-------------|--------------|-----------------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource key to extend the lock on.                         |
+| `uuid`          | `string`    | Yes          | UUID (or custom value) of the lock acquisition to extend.       |
+| `extendBy`      | `number`    | Yes          | Milliseconds to extend the lock.                                |
+| `softFail`      | `boolean`   | No           | Return errors inline in an HTTP 200 instead of throwing errors. |
 
 - **Endpoint:** `POST https://lock.evermind.sh/lock/extend`
 - **SDK Method:** `evermind.extend(options: ExtendOptions)`
@@ -405,11 +415,11 @@ Extends the duration of an existing lock. The `uuid` must match the UUID of the 
 
 #### 5.1.3. Release Lock
 
-| **Field**       | **Type**    | **Required** | **Description**                                         |
-|------------------|-------------|--------------|---------------------------------------------------------|
-| `key`           | `string`    | Yes          | The resource key to release the lock on.               |
-| `uuid`          | `string`    | Yes          | UUID of the lock instance to release.                  |
-| `softFail`      | `boolean`   | No           | Return errors inline (`200`) instead of exceptions.     |
+| **Field**       | **Type**    | **Required** | **Description**                                                 |
+|------------------|-------------|--------------|-----------------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource key to release the lock on.                        |
+| `uuid`          | `string`    | Yes          | UUID (or custom value) of the lock acquisition to release.      |
+| `softFail`      | `boolean`   | No           | Return errors inline in an HTTP 200 instead of throwing errors. |
 
 - **Endpoint:** `POST https://lock.evermind.sh/lock/release`
 - **SDK Method:** `evermind.release(options: ReleaseOptions)`
