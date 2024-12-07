@@ -81,6 +81,13 @@ export interface AcquireOptions {
     retryDelay?: number;
 
     /**
+     * An amount of time in milliseconds to randomly add to the retry delay to
+     * help in times of high lock contention. See:
+     * {@link https://www.awsarchitectureblog.com/2015/03/backoff.html}
+     */
+    retryJitter?: number;
+
+    /**
      * A custom UUID to be used as the lock acquisition value, each request to
      * acquire a lock will be assigned a {@link uuid} if one is not passed in.
      *
@@ -93,6 +100,12 @@ export interface AcquireOptions {
      * lock fails to be acquired.
      */
     softFail?: boolean;
+
+    /**
+     * Whether this lock should be acquired in FIFO (First-in-first-out) or FCFS
+     * (First-come-first-serve) order.
+     */
+    fifo?: boolean;
 }
 
 export interface AcquiredResponse {
