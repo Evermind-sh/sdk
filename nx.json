@@ -9,7 +9,7 @@
         ],
         "sharedGlobals": []
     },
-	"plugins": [
+    "plugins": [
         {
             "plugin": "@nx/js/typescript",
             "options": {

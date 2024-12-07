@@ -369,16 +369,31 @@ Here’s the expanded **DTOs** section with endpoint details, Evermind SDK metho
 
 The Lock API is used for acquiring, extending, and releasing locks. Below are the DTOs for each operation, along with their corresponding HTTP endpoints and Evermind SDK method names.
 
+The resulting Resource Key (the globally unique key to acquire the lock on) is in the following format.
+
+```md
+<GlobalPrefix>:<IdentityId>:<Order>:<Key>
+```
+
+1. `GlobalPrefix`: Will always be `Evermind` unless you have your own deployment or isolated environment of the Evermind system. This key will be the same across all locks in the system.
+2. `IdentityId`: A unique ID that corresponds to the account that the API key belongs to, if purchased via the Polar.sh storefront this will be your `userId`.
+3. `Order`: Either `FIFO` (First-in-first-out) or `FCFS` (First-come-first-serve). Will determine how lock contentions are resolved and in what order.
+4. `Key`: The key you pass in for the resource, this can be anything you want it to be.
+
+The only parts you have control over are the `Order` and the `Key`, the other parts of the lock key are managed by the system itself and are there to prevent locks from clashing across users of Evermind.
+
 #### 5.1.1. Acquire Lock
 
-| **Field**       | **Type**    | **Required** | **Description**                                                                                                        |
-|------------------|-------------|--------------|------------------------------------------------------------------------------------------------------------------------|
-| `key`           | `string`    | Yes          | The resource to acquire a lock on.                                                                                     |
-| `lease`         | `number`    | No           | Lock duration in milliseconds. Default: `10000`.                                                                       |
-| `retryAttempts` | `number`    | No           | Number of retry attempts. Default: `10`.                                                                               |
-| `retryDelay`    | `number`    | No           | Milliseconds between retries. Default: `500`.                                                                          |
-| `uuid`          | `string`    | No           | Optional custom UUID for the lock. If not provided a UUIDv7 is used by default. It is recommended you use the default. |
-| `softFail`      | `boolean`   | No           | Return errors inline in an HTTP 200 instead of throwing errors.                                                        |
+| **Field**       | **Type**    | **Required** | **Description**                                                                                                                                                                             |
+|-----------------|-------------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`           | `string`    | Yes          | The resource to acquire a lock on.                                                                                                                                                          |
+| `lease`         | `number`    | No           | Lock duration in milliseconds. Default: `10000`.                                                                                                                                            |
+| `retryAttempts` | `number`    | No           | Number of retry attempts. Default: `10`.                                                                                                                                                    |
+| `retryDelay`    | `number`    | No           | Milliseconds between retries. Default: `500`.                                                                                                                                               |
+| `retryJitter`   | `number`    | No           | An amount of time in milliseconds to randomly add to the retry delay to help in times of high lock contention. See: https://www.awsarchitectureblog.com/2015/03/backoff.html. Default: `0`. |
+| `uuid`          | `string`    | No           | Optional custom UUID for the lock. If not provided a UUIDv7 is used by default. It is recommended you use the default.                                                                      |
+| `softFail`      | `boolean`   | No           | Return errors inline in an HTTP 200 instead of throwing errors.                                                                                                                             |
+| `fifo`          | `boolean`   | No           | Whether this lock should be acquired in FIFO or FCFS order.                                                                                                                                 |
 
 - **Endpoint:** `POST https://lock.evermind.sh/lock/acquire`
 - **SDK Method:** `evermind.acquire(options: AcquireOptions)`
@@ -389,6 +404,7 @@ Acquires a lock on a given resource (`key`). By default, if the lock cannot be a
 **Caveats:**
 - Locks are tied to a unique `uuid`. If a custom UUID is not provided, the system generates one.
 - Using `softFail: true` ensures errors are returned inline instead of throwing exceptions. This can simplify error handling in some scenarios.
+- When multiple processes are trying to acquire a lock on the same resource key ensure you are using the right `fifo` value otherwise locks may get into an unrecoverable state since some will be trying to acquire in FIFO order and some in FCFS order.
 
 ---
 
