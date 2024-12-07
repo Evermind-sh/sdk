@@ -372,15 +372,14 @@ The Lock API is used for acquiring, extending, and releasing locks. Below are th
 The resulting Resource Key (the globally unique key to acquire the lock on) is in the following format.
 
 ```md
-<GlobalPrefix>:<IdentityId>:<Order>:<Key>
+<GlobalPrefix>:<IdentityId>:<Key>
 ```
 
 1. `GlobalPrefix`: Will always be `Evermind` unless you have your own deployment or isolated environment of the Evermind system. This key will be the same across all locks in the system.
 2. `IdentityId`: A unique ID that corresponds to the account that the API key belongs to, if purchased via the Polar.sh storefront this will be your `userId`.
-3. `Order`: Either `FIFO` (First-in-first-out) or `FCFS` (First-come-first-serve). Will determine how lock contentions are resolved and in what order.
-4. `Key`: The key you pass in for the resource, this can be anything you want it to be.
+3. `Key`: The key you pass in for the resource, this can be anything you want it to be.
 
-The only parts you have control over are the `Order` and the `Key`, the other parts of the lock key are managed by the system itself and are there to prevent locks from clashing across users of Evermind.
+The only parts you have control over are the `Key`, the other parts of the lock key are managed by the system itself and are there to prevent locks from clashing across users of Evermind.
 
 #### 5.1.1. Acquire Lock
 
